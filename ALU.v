@@ -56,15 +56,13 @@ module ALU(
                         N = ALUout[31];
                     end
             4'b0010: begin //ADD Unisigned
-                        ALUout = A + B;
-                        C = 1'bx;
-                        V = 1'bx;
-                        N = ALUout[31];
+                        {C, ALUout} = A + B;
+                        V = C;
+                        N = 0;
                     end
             4'b0110: begin //Subtraction unsigned
-                        ALUout = A - B;
-                        C = 1'bx;
-                        V = 1'bx;
+                        {C, ALUout} = A - B;
+                        V = C;
                         N = ALUout[31];
                     end
             4'b1100: begin //NOr Operation
@@ -81,20 +79,24 @@ module ALU(
                     end
             4'b1101: begin //Shift Left Logical
                         ALUout = A << 1;
-                        C = 1'bx;
-                        V = 1'bx;
+//                        C = 1'bx;
+//                        V = 1'bx;
                         N = ALUout[31];
                     end
-            4'b1010: begin //ADD Operation
-                        ALUout = A + B;
-                        C = 1'bx;
-                        V = 1'bx;
+            4'b1010: begin //ADD signed
+                        {C, ALUout} = A + B;
+                        if ( (A[31] & B[31] & ~ALUout[31]) || (~A[31] & ~B[31] & ALUout[31]))
+                            V = 1'b1;
+                        else
+                            V = 1'b0;
                         N = ALUout[31];
                     end
-            4'b1101: begin //Subtract Operation
-                        ALUout = A - B;
-                        C = 1'bx;
-                        V = 1'bx;
+            4'b1101: begin //Subtract signed
+                        {C, ALUout} = A - B;
+                        if ( (A[31] & B[31] & ~ALUout[31]) || (~A[31] & ~B[31] & ALUout[31]))
+                            V = 1'b1;
+                        else
+                            V = 1'b0;
                         N = ALUout[31];
                     end
                   
